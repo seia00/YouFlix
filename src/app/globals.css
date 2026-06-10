@@ -1,26 +1,176 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   Youflix — Cinematic Design System (Tailwind CSS v4)
+   Dark-mode-only, premium streaming aesthetic.
+   ========================================================================== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ------------------------------------------------------------------
+   Theme Tokens
+   ------------------------------------------------------------------ */
+@theme {
+  /* Type scale */
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Brand palette */
+  --color-bg:          #090909;
+  --color-surface:     #111111;
+  --color-surface-alt: #1A1A1A;
+  --color-text:        #FFFFFF;
+  --color-text-muted:  #B3B3B3;
+  --color-accent:      #8B5CF6;
+  --color-accent-hover:#A78BFA;
+  --color-border:      rgba(255, 255, 255, 0.08);
+  --color-border-hover:rgba(255, 255, 255, 0.16);
+  --color-glass:       rgba(17, 17, 17, 0.65);
+
+  /* Animations */
+  --animate-shimmer: shimmer 1.5s infinite linear;
+  --animate-fade-up:  fade-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+  --animate-fade-in:  fade-in 0.4s ease both;
+  --animate-scale-up: scale-up 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes scale-up {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
   }
 }
 
+/* ------------------------------------------------------------------
+   Global Resets & Base
+   ------------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  border-color: var(--color-border);
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------
+   Scrollbar — thin, minimal, cinematic
+   ------------------------------------------------------------------ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+/* ------------------------------------------------------------------
+   Utility Classes — glass, gradient overlays, masks
+   ------------------------------------------------------------------ */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+}
+
+.gradient-bottom {
+  background: linear-gradient(
+    to top,
+    var(--color-bg) 0%,
+    transparent 60%
+  );
+}
+
+.gradient-top {
+  background: linear-gradient(
+    to bottom,
+    rgba(9, 9, 9, 0.8) 0%,
+    transparent 50%
+  );
+}
+
+.gradient-hero {
+  background: linear-gradient(
+    77deg,
+    var(--color-bg) 25%,
+    rgba(9, 9, 9, 0.85) 45%,
+    transparent 65%
+  ),
+  linear-gradient(
+    to top,
+    var(--color-bg) 0%,
+    transparent 50%
+  );
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-alt) 25%,
+    var(--color-surface) 50%,
+    var(--color-surface-alt) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* ------------------------------------------------------------------
+   Row scroll-snapping (used by HorizontalRow)
+   ------------------------------------------------------------------ */
+.snap-row {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.snap-row > * {
+  scroll-snap-align: start;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ------------------------------------------------------------------
+   Focus ring
+   ------------------------------------------------------------------ */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
