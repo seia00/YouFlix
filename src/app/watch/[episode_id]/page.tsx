@@ -38,7 +38,10 @@ export default async function WatchPage({
 
   return (
     <div className="fixed inset-0 z-40 bg-black">
-      <WatchPageClient episode={episodeData} queue={queue} />
+      {/* Lights down, then the screen opens like a curtain */}
+      <div className="h-full animate-letterbox [animation-delay:150ms]">
+        <WatchPageClient episode={episodeData} queue={queue} />
+      </div>
     </div>
   );
 }

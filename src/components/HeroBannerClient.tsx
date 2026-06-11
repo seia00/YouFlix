@@ -116,8 +116,9 @@ export function HeroBannerClient({ youtubeId, muted = true }: HeroBannerClientPr
         isPlaying ? "opacity-100" : "opacity-0"
       }`}
     >
-      {/* Scale the iframe up for a cinematic zoom-to-fill crop */}
-      <div className="absolute left-1/2 top-1/2 h-[177.78vh] w-[177.78vw] min-h-full min-w-full -translate-x-1/2 -translate-y-1/2">
+      {/* 16:9 iframe sized to cover the viewport in both orientations —
+          the aspect lock means YouTube never letterboxes inside it */}
+      <div className="absolute left-1/2 top-1/2 aspect-video w-[max(100vw,177.78vh)] -translate-x-1/2 -translate-y-1/2">
         <div
           id={elementId}
           className="h-full w-full"

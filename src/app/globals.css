@@ -53,6 +53,12 @@
     from { clip-path: inset(50% 0 50% 0); }
     to   { clip-path: inset(0 0 0 0); }
   }
+  /* Search trigger: a periodic ring bloom — wants to be pressed */
+  --animate-glow-pulse: glow-pulse 3.4s ease-in-out infinite;
+  @keyframes glow-pulse {
+    0%, 84%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+    92%           { box-shadow: 0 0 0 5px rgba(139, 92, 246, 0.16); }
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -147,7 +153,7 @@ body {
 .gradient-hero {
   background:
     linear-gradient(77deg, var(--color-bg) 18%, rgba(9, 9, 9, 0.82) 38%, transparent 62%),
-    linear-gradient(to top, var(--color-bg) 2%, rgba(9, 9, 9, 0.45) 26%, transparent 55%),
+    linear-gradient(to top, var(--color-bg) 5%, rgba(9, 9, 9, 0.6) 28%, transparent 58%),
     linear-gradient(to bottom, rgba(9, 9, 9, 0.65) 0%, transparent 22%);
 }
 

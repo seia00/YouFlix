@@ -7,7 +7,7 @@
    ========================================================================== */
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, Volume2, VolumeX } from "lucide-react";
@@ -30,6 +30,14 @@ const ROTATE_MS = 8000;
 const SWIPE_THRESHOLD = 70;
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const EASE_IN = [0.55, 0, 0.1, 1] as const;
+
+/* Swipe is only wired on touch devices (hover: none) */
+function subscribeTouch(callback: () => void) {
+  const mq = window.matchMedia("(hover: none)");
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+const getIsTouch = () => window.matchMedia("(hover: none)").matches;
 
 /* Text choreography — the title rises out of a mask like a film credit,
    supporting lines follow with a short stagger. */
@@ -90,7 +98,7 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
   // Bumped to restart the rotation timer + progress drain (manual nav, tab refocus)
   const [cycle, setCycle] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
-  const [isTouch, setIsTouch] = useState(false);
+  const isTouch = useSyncExternalStore(subscribeTouch, getIsTouch, () => false);
 
   const hero = slides[active];
 
@@ -134,11 +142,6 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [step]);
-
-  /* Swipe is only wired on touch devices */
-  useEffect(() => {
-    setIsTouch(window.matchMedia("(hover: none)").matches);
-  }, []);
 
   const onDragEnd = useCallback(
     (_: unknown, info: PanInfo) => {

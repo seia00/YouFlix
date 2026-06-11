@@ -18,6 +18,8 @@ interface ThumbnailCardProps {
   show: ShowCard;
   index: number;
   rank?: number;
+  /** Fill the parent (grid layouts) instead of fixed shelf widths. */
+  fluid?: boolean;
 }
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
@@ -49,7 +51,7 @@ const restingTitle: Variants = {
   hover: { opacity: 0, transition: { duration: 0.2 } },
 };
 
-export default function ThumbnailCard({ show, index, rank }: ThumbnailCardProps) {
+export default function ThumbnailCard({ show, index, rank, fluid = false }: ThumbnailCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -79,7 +81,7 @@ export default function ThumbnailCard({ show, index, rank }: ThumbnailCardProps)
         initial="rest"
         whileHover="hover"
         animate="rest"
-        className="relative z-[1] w-[200px] sm:w-[250px] lg:w-[278px]"
+        className={`relative z-[1] ${fluid ? "w-full" : "w-[200px] sm:w-[250px] lg:w-[278px]"}`}
       >
         <Link href={`/show/${show.id}`} className="group block">
           <motion.div
@@ -88,7 +90,7 @@ export default function ThumbnailCard({ show, index, rank }: ThumbnailCardProps)
           >
             <div className="relative aspect-video">
               {/* Shimmer placeholder until the image resolves */}
-              {!imageLoaded && !imageError && (
+              {show.thumbnail_url && !imageLoaded && !imageError && (
                 <div className="absolute inset-0 shimmer" />
               )}
 
@@ -109,9 +111,15 @@ export default function ThumbnailCard({ show, index, rank }: ThumbnailCardProps)
                   />
                 </motion.div>
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent/30 to-surface-alt p-4 text-center">
-                  <span className="text-xs font-semibold text-text-muted line-clamp-2">
+                <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 bg-surface-alt p-4 text-center">
+                  <span className="type-overline text-[8px] text-accent-hover/90">
+                    {show.genre ?? "Series"}
+                  </span>
+                  <span className="text-sm font-bold tracking-[-0.01em] text-text line-clamp-2">
                     {show.title}
+                  </span>
+                  <span className="text-[10px] text-text-dim">
+                    {show.creator_name}
                   </span>
                 </div>
               )}

@@ -29,16 +29,14 @@ export default function SeasonSelector({
 
   if (seasons.length <= 1) {
     return (
-      <div className="mb-6">
-        <span className="text-sm font-semibold text-text">
-          {label}
-        </span>
-      </div>
+      <span className="rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-text-muted">
+        {label}
+      </span>
     );
   }
 
   return (
-    <div className="relative mb-6">
+    <div className="relative">
       {/* Trigger */}
       <button
         type="button"

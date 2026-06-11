@@ -116,7 +116,7 @@ export default function HorizontalRow({
         onScroll={updateScrollState}
         data-at-start={atStart}
         data-at-end={atEnd}
-        className="snap-row row-mask hide-scrollbar -mb-5 flex gap-3 overflow-x-auto px-5 pb-8 pt-2 sm:px-10 lg:px-14"
+        className="snap-row row-mask hide-scrollbar -mb-5 flex gap-3 overflow-x-auto px-5 pb-8 pt-2 scroll-pl-5 sm:px-10 sm:scroll-pl-10 lg:px-14 lg:scroll-pl-14"
       >
         {shows.map((show, i) => (
           <ThumbnailCard

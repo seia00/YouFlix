@@ -1,11 +1,13 @@
 /* ==========================================================================
    Show Detail Page — /show/[id]
-   Server Component. Fetches the show with all seasons and episodes.
-   Renders the cinematic banner + season selector + episode grid.
+   Server Component. The homepage thumbnail grown into a full banner:
+   real show imagery under the same gradient architecture as the hero,
+   monumental title, mono stats, staggered CSS entrance.
    ========================================================================== */
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Play } from "lucide-react";
 import type { Metadata } from "next";
 import { getShowWithDetails } from "@/lib/data";
@@ -38,83 +40,92 @@ export default async function ShowDetailPage({
 
   if (!show) notFound();
 
-  // First episode of first season for the "Play" button
   const firstSeason = show.seasons[0];
   const firstEpisode = firstSeason?.episodes[0];
+  const episodeCount = show.seasons.reduce((sum, s) => sum + s.episodes.length, 0);
+  const bannerUrl = show.banner_url ?? show.thumbnail_url;
 
   return (
     <div className="min-h-screen bg-bg">
       {/* ------------------------------------------------------------------
-          Banner — gradient background with show info
+          Banner — the clicked thumbnail in its grown state
           ------------------------------------------------------------------ */}
       <section className="relative overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-surface to-bg" />
+        <div className="absolute inset-0 grain">
+          {bannerUrl ? (
+            <Image
+              src={bannerUrl}
+              alt=""
+              aria-hidden
+              fill
+              priority
+              unoptimized
+              className="object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/25 via-surface to-bg" />
+          )}
+          <div className="absolute inset-0 gradient-hero" />
+        </div>
 
-        {/* Subtle pattern overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
-
-        <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-32 sm:px-8 lg:px-12">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl animate-fade-up">
-              {/* Genre */}
-              {show.genre && (
-                <span className="mb-4 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-medium uppercase tracking-widest text-text backdrop-blur-md">
-                  {show.genre}
-                </span>
-              )}
-
-              {/* Title */}
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-text sm:text-4xl lg:text-5xl">
-                {show.title}
-              </h1>
-
-              {/* Creator */}
-              <p className="mt-3 flex items-center gap-2 text-sm text-accent">
-                <span>by</span>
-                <span className="font-semibold">{show.creator.name}</span>
-              </p>
-
-              {/* Description */}
-              <p className="mt-4 max-w-xl text-base leading-relaxed text-text-muted">
-                {show.description}
-              </p>
-
-              {/* Stats */}
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-text-muted">
-                <span>
-                  {show.seasons.length} Season{show.seasons.length !== 1 ? "s" : ""}
-                </span>
-                <span className="text-border">|</span>
-                <span>
-                  {show.seasons.reduce((sum, s) => sum + s.episodes.length, 0)} Episode
-                  {show.seasons.reduce((sum, s) => sum + s.episodes.length, 0) !== 1 ? "s" : ""}
-                </span>
-              </div>
+        <div className="relative z-10 mx-auto flex min-h-[60svh] w-full max-w-[1400px] flex-col justify-end px-5 pb-12 pt-36 sm:px-10 lg:min-h-[68svh] lg:px-14">
+          <div className="max-w-3xl">
+            {/* Overline — genre, rule, creator */}
+            <div className="type-overline animate-fade-up mb-4 flex items-center gap-3">
+              {show.genre && <span className="text-accent-hover">{show.genre}</span>}
+              <span className="h-px w-8 bg-white/30" aria-hidden />
+              <span className="text-text-muted">{show.creator.name}</span>
             </div>
 
-            {/* CTA — Play first episode */}
-            {firstEpisode && (
-              <Link
-                href={`/watch/${firstEpisode.id}`}
-                className="flex-shrink-0 inline-flex items-center gap-2 rounded-lg bg-accent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-accent-hover hover:scale-105 active:scale-95 lg:self-end"
+            {/* Title */}
+            <h1
+              className="type-display animate-fade-up text-[clamp(2.25rem,7vw,4.75rem)] text-text"
+              style={{ animationDelay: "70ms" }}
+            >
+              {show.title}
+            </h1>
+
+            {/* Description */}
+            {show.description && (
+              <p
+                className="animate-fade-up mt-5 max-w-xl text-sm leading-relaxed text-text-muted sm:text-base"
+                style={{ animationDelay: "140ms" }}
               >
-                <Play className="h-5 w-5 fill-white" />
-                Play S1:E1
-              </Link>
+                {show.description}
+              </p>
+            )}
+
+            {/* Stats */}
+            <p
+              className="animate-fade-up mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-text-dim"
+              style={{ animationDelay: "200ms" }}
+            >
+              {show.seasons.length} {show.seasons.length === 1 ? "Season" : "Seasons"}
+              <span className="mx-3 text-white/20">/</span>
+              {episodeCount} {episodeCount === 1 ? "Episode" : "Episodes"}
+            </p>
+
+            {/* CTA */}
+            {firstEpisode && (
+              <div className="animate-fade-up mt-7" style={{ animationDelay: "260ms" }}>
+                <Link
+                  href={`/watch/${firstEpisode.id}`}
+                  className="inline-flex items-center gap-2.5 rounded-md bg-text px-6 py-3 text-sm font-semibold text-bg transition-transform duration-200 hover:scale-[1.03] active:scale-[0.97] sm:px-7"
+                >
+                  <Play className="h-4 w-4 fill-bg" />
+                  Play S{firstSeason.season_number} · E{firstEpisode.episode_number}
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </section>
 
       {/* ------------------------------------------------------------------
-          Episodes — season selector + episode grid
+          Episodes — header, season selector, and grid live in the client
           ------------------------------------------------------------------ */}
-      <section className="mx-auto max-w-7xl px-6 pb-24 sm:px-8 lg:px-12">
-        <ShowDetailClient
-          showId={show.id}
-          seasons={show.seasons}
-        />
+      <section className="mx-auto max-w-[1400px] px-5 pb-28 pt-10 sm:px-10 lg:px-14">
+        <ShowDetailClient showId={show.id} seasons={show.seasons} />
       </section>
     </div>
   );
