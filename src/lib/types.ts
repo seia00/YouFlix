@@ -107,6 +107,11 @@ export interface HeroContent {
   trailer_youtube_id: string;
 }
 
+/** Hero slide — HeroContent enriched with a resolvable first-episode link. */
+export interface HeroSlide extends HeroContent {
+  watch_href: string;
+}
+
 /** Row data contract — category label + an array of cards. */
 export interface ContentRow {
   id: string;

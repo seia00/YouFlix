@@ -16,19 +16,24 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-bg">
       {/* ------------------------------------------------------------------
-          Hero Carousel — all 8 shows rotate on a timer
+          Hero Carousel — all shows rotate as a teaser reel
           ------------------------------------------------------------------ */}
       <Suspense fallback={<HeroBannerSkeleton />}>
         <HeroSection />
       </Suspense>
 
       {/* ------------------------------------------------------------------
-          Content Rows — each row streams independently
+          Content Rows — trending gets ranked numerals, each row streams
           ------------------------------------------------------------------ */}
-      <div className="-mt-16 relative z-30 space-y-8 pb-16">
-        {rows.map((row) => (
+      <div className="relative z-30 space-y-10 pb-24 pt-8">
+        {rows.map((row, index) => (
           <Suspense key={row.id} fallback={<RowSkeleton />}>
-            <HorizontalRow label={row.label} shows={row.shows} />
+            <HorizontalRow
+              label={row.label}
+              shows={row.shows}
+              index={index}
+              ranked={row.id === "trending"}
+            />
           </Suspense>
         ))}
       </div>

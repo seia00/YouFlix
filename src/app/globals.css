@@ -2,14 +2,14 @@
 
 /* ==========================================================================
    Youflix — Cinematic Design System (Tailwind CSS v4)
-   Dark-mode-only, premium streaming aesthetic.
+   Dark-mode-only. One background. One accent. Light is the hierarchy.
    ========================================================================== */
 
 /* ------------------------------------------------------------------
    Theme Tokens
    ------------------------------------------------------------------ */
 @theme {
-  /* Type scale */
+  /* Type */
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
 
@@ -19,33 +19,39 @@
   --color-surface-alt: #1A1A1A;
   --color-text:        #FFFFFF;
   --color-text-muted:  #B3B3B3;
+  --color-text-dim:    #6E6E6E;
   --color-accent:      #8B5CF6;
   --color-accent-hover:#A78BFA;
   --color-border:      rgba(255, 255, 255, 0.08);
   --color-border-hover:rgba(255, 255, 255, 0.16);
-  --color-glass:       rgba(17, 17, 17, 0.65);
+  --color-glass:       rgba(9, 9, 9, 0.55);
+
+  /* Motion — two curves, used everywhere. Snappy out, weighted settle. */
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swift:     cubic-bezier(0.55, 0, 0.1, 1);
 
   /* Animations */
-  --animate-shimmer: shimmer 1.5s infinite linear;
-  --animate-fade-up:  fade-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-  --animate-fade-in:  fade-in 0.4s ease both;
-  --animate-scale-up: scale-up 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+  --animate-shimmer:   shimmer 1.6s infinite linear;
+  --animate-fade-up:   fade-up 0.5s var(--ease-out-expo) both;
+  --animate-fade-in:   fade-in 0.35s ease both;
+  --animate-letterbox: letterbox 0.9s var(--ease-swift) both;
 
   @keyframes shimmer {
     0%   { background-position: -200% 0; }
     100% { background-position: 200% 0; }
   }
   @keyframes fade-up {
-    from { opacity: 0; transform: translateY(24px); }
+    from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes fade-in {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-  @keyframes scale-up {
-    from { opacity: 0; transform: scale(0.92); }
-    to   { opacity: 1; transform: scale(1); }
+  /* Watch page: the lights go down, then the screen opens like a curtain */
+  @keyframes letterbox {
+    from { clip-path: inset(50% 0 50% 0); }
+    to   { clip-path: inset(0 0 0 0); }
   }
 }
 
@@ -63,7 +69,6 @@ html {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -71,6 +76,12 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   min-height: 100vh;
+  overflow-x: clip;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  color: var(--color-text);
 }
 
 /* ------------------------------------------------------------------
@@ -98,61 +109,75 @@ body {
 }
 
 /* ------------------------------------------------------------------
-   Utility Classes — glass, gradient overlays, masks
+   Display type — the monumental register.
+   Weight + compression do the talking, not just size.
+   ------------------------------------------------------------------ */
+.type-display {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+.type-overline {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------
+   Surfaces — glass, gradients, grain
    ------------------------------------------------------------------ */
 .glass {
   background: var(--color-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--color-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
 }
 
 .gradient-bottom {
-  background: linear-gradient(
-    to top,
-    var(--color-bg) 0%,
-    transparent 60%
-  );
+  background: linear-gradient(to top, var(--color-bg) 0%, transparent 60%);
 }
 
 .gradient-top {
-  background: linear-gradient(
-    to bottom,
-    rgba(9, 9, 9, 0.8) 0%,
-    transparent 50%
-  );
+  background: linear-gradient(to bottom, rgba(9, 9, 9, 0.8) 0%, transparent 50%);
 }
 
 .gradient-hero {
-  background: linear-gradient(
-    77deg,
-    var(--color-bg) 25%,
-    rgba(9, 9, 9, 0.85) 45%,
-    transparent 65%
-  ),
-  linear-gradient(
-    to top,
-    var(--color-bg) 0%,
-    transparent 50%
-  );
+  background:
+    linear-gradient(77deg, var(--color-bg) 18%, rgba(9, 9, 9, 0.82) 38%, transparent 62%),
+    linear-gradient(to top, var(--color-bg) 2%, rgba(9, 9, 9, 0.45) 26%, transparent 55%),
+    linear-gradient(to bottom, rgba(9, 9, 9, 0.65) 0%, transparent 22%);
+}
+
+/* Film grain — one quiet layer of texture over video surfaces */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 .shimmer {
   background: linear-gradient(
     90deg,
-    var(--color-surface-alt) 25%,
-    var(--color-surface) 50%,
-    var(--color-surface-alt) 75%
+    var(--color-surface) 25%,
+    var(--color-surface-alt) 50%,
+    var(--color-surface) 75%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite linear;
+  animation: shimmer 1.6s infinite linear;
 }
 
 /* ------------------------------------------------------------------
-   Row scroll-snapping (used by HorizontalRow)
+   Rows — edge masks say "there's more this way" without arrows
    ------------------------------------------------------------------ */
 .snap-row {
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
 }
 .snap-row > * {
@@ -166,6 +191,67 @@ body {
   scrollbar-width: none;
 }
 
+.row-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 24px,
+    black calc(100% - 56px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 24px,
+    black calc(100% - 56px),
+    transparent 100%
+  );
+}
+.row-mask[data-at-start="true"] {
+  mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(100% - 56px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(100% - 56px),
+    transparent 100%
+  );
+}
+.row-mask[data-at-end="true"] {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 24px,
+    black 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 24px,
+    black 100%
+  );
+}
+.row-mask[data-at-start="true"][data-at-end="true"] {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* ------------------------------------------------------------------
+   Ranked row numerals — hollow digits that catch the accent on hover
+   ------------------------------------------------------------------ */
+.rank-digit {
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.22);
+  color: transparent;
+  transition: -webkit-text-stroke-color 300ms ease;
+}
+.card-unit:hover .rank-digit {
+  -webkit-text-stroke-color: rgba(167, 139, 250, 0.85);
+}
+
 /* ------------------------------------------------------------------
    Focus ring
    ------------------------------------------------------------------ */
@@ -173,4 +259,18 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion — everything settles instantly
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -1,8 +1,9 @@
 /* ==========================================================================
    HeroBannerClient — Client Component
-   Renders a muted, non-interactive YouTube iframe backdrop.
-   Blocks all pointer events so YouTube's native UI never appears.
-   Remounts cleanly when youtubeId changes.
+   Renders a non-interactive YouTube iframe backdrop that fades in over
+   the poster only once playback has actually started. Blocks all pointer
+   events so YouTube's native UI never appears. Supports a controlled
+   muted prop for the hero sound toggle.
    ========================================================================== */
 "use client";
 
@@ -10,10 +11,10 @@ import { useEffect, useRef, useState } from "react";
 
 interface HeroBannerClientProps {
   youtubeId: string;
+  muted?: boolean;
 }
 
 // Keep track of whether the IFrame API script has been injected globally.
-let _apiLoaded = false;
 let _apiLoading = false;
 const _pendingCallbacks: (() => void)[] = [];
 
@@ -29,7 +30,6 @@ function loadYouTubeApi(): Promise<void> {
     tag.src = "https://www.youtube.com/iframe_api";
     document.getElementsByTagName("script")[0].parentNode?.insertBefore(tag, document.getElementsByTagName("script")[0]);
     (window as unknown as Record<string, () => void>).onYouTubeIframeAPIReady = () => {
-      _apiLoaded = true;
       _apiLoading = false;
       _pendingCallbacks.forEach((cb) => cb());
       _pendingCallbacks.length = 0;
@@ -40,10 +40,11 @@ function loadYouTubeApi(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type YTPlayer = any;
 
-export function HeroBannerClient({ youtubeId }: HeroBannerClientProps) {
+export function HeroBannerClient({ youtubeId, muted = true }: HeroBannerClientProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const elementId = `hero-yt-${youtubeId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
   useEffect(() => {
@@ -75,6 +76,9 @@ export function HeroBannerClient({ youtubeId }: HeroBannerClientProps) {
           },
           events: {
             onReady: () => { if (!cancelled) setIsReady(true); },
+            onStateChange: (e: { data: number }) => {
+              if (!cancelled && e.data === 1) setIsPlaying(true);
+            },
           },
         });
       } catch {
@@ -91,11 +95,27 @@ export function HeroBannerClient({ youtubeId }: HeroBannerClientProps) {
         playerRef.current = null;
       }
       setIsReady(false);
+      setIsPlaying(false);
     };
   }, [youtubeId, elementId]);
 
+  /* Controlled mute — the hero's sound toggle */
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || !isReady) return;
+    try {
+      if (muted) player.mute();
+      else player.unMute();
+    } catch { /* */ }
+  }, [muted, isReady]);
+
   return (
-    <div ref={containerRef} className="relative h-full w-full overflow-hidden">
+    <div
+      ref={containerRef}
+      className={`relative h-full w-full overflow-hidden transition-opacity duration-700 ${
+        isPlaying ? "opacity-100" : "opacity-0"
+      }`}
+    >
       {/* Scale the iframe up for a cinematic zoom-to-fill crop */}
       <div className="absolute left-1/2 top-1/2 h-[177.78vh] w-[177.78vw] min-h-full min-w-full -translate-x-1/2 -translate-y-1/2">
         <div
@@ -111,11 +131,6 @@ export function HeroBannerClient({ youtubeId }: HeroBannerClientProps) {
           title overlay from ever appearing. The video is purely ambient.
           ------------------------------------------------------------------ */}
       <div className="absolute inset-0 z-10" />
-
-      {/* Fade-in overlay while player loads */}
-      {!isReady && (
-        <div className="absolute inset-0 bg-bg animate-fade-in" />
-      )}
 
       {/* Dark vignette overlay */}
       <div
