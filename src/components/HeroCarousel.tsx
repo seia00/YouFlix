@@ -58,9 +58,9 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background YouTube player */}
+      {/* Background YouTube player — key forces remount on slide change */}
       <div className="absolute inset-0 z-0">
-        <HeroBannerClient youtubeId={hero.trailer_youtube_id} />
+        <HeroBannerClient key={hero.trailer_youtube_id} youtubeId={hero.trailer_youtube_id} />
       </div>
 
       {/* Gradient overlays */}

@@ -28,19 +28,26 @@ const YT = {
   mb_ex_island:         "AaMdXZMvT3w", // "Survive 30 Days On An Island With Your Ex, Win $250,000"
   mb_wilderness_100:    "6Zy5VLcEbZc", // "I Stranded 100 People In The Wilderness For $250,000"
 
-  /* ---- Ryan Trahan (PLACEHOLDER — run fetch-channel.ts) ---- */
+  /* ---- Ryan Trahan (REAL — from RSS feed June 2026) ---- */
+  rt_america_01: "DGEUEZ27jMg", // "I Visited the Top 10 Places in America"
+  rt_america_02: "___Pfayjq4g", // "Top 10 Places - Washington D.C."
+  rt_america_03: "_yJ6ZmcndxI", // "Top 10 Places - Niagara Falls"
+  rt_america_04: "Hg_dYwzPP8M", // "Top 10 Places - New York City"
+  rt_america_05: "OXq2EveZAoY", // "Top 10 Places - Yellowstone"
   rt_penny_01: "REPLACE_ME_RT_PENNY_01",
   rt_penny_02: "REPLACE_ME_RT_PENNY_02",
-  rt_penny_03: "REPLACE_ME_RT_PENNY_03",
   rt_survive_01: "REPLACE_ME_RT_SURVIVE_01",
-  rt_survive_02: "REPLACE_ME_RT_SURVIVE_02",
 
-  /* ---- Yes Theory (PLACEHOLDER — run fetch-channel.ts) ---- */
-  yt_seek_01: "REPLACE_ME_YT_01",
-  yt_seek_02: "REPLACE_ME_YT_02",
-  yt_seek_03: "REPLACE_ME_YT_03",
-  yt_project_01: "REPLACE_ME_YT_PROJ_01",
-  yt_project_02: "REPLACE_ME_YT_PROJ_02",
+  /* ---- Yes Theory (REAL — from RSS feed June 2026) ---- */
+  yt_tokyo_drift:  "qG0UwUeKhAg", // "Inside Japan's Illegal Drifting Underworld"
+  yt_isolated_man: "o1WUlOXCiEE", // "The Most Isolated Man in the World"
+  yt_dangerous_island: "IEIBXM1YwO8", // "50 Hours on Europe's Most Dangerous Island"
+  yt_stranded_42h: "K-dqq7wbqNg", // "Actually Stranded on a Deserted Island for 42 Hours"
+  yt_pakistan:     "C_2cE21MM7s", // "Inside Pakistan's Most Dangerous City"
+  yt_abandoned_jp: "PApu9YFk1HI", // "Why Does Japan Have 9M Abandoned Homes?"
+  yt_2countries:   "8_wiuDd691s", // "24 Hours in 2 Countries that Hate Each Other"
+  yt_delivery_vacation: "w9oxLSRy-zc", // "We Took Our Food Delivery Man on His First Vacation"
+  yt_scotland:     "_Ul2V3Dj2Mo", // "Exploring Scotland's Forgotten Castles"
 } as const;
 
 /* ==================================================================
@@ -59,8 +66,8 @@ const IDS = {
 
   show_kelly_experience: "a0000000-0000-0000-0000-000000000001" as const,
   show_kelly_japan:      "a0000000-0000-0000-0000-000000000002" as const,
-  show_ryan_penny:       "a0000000-0000-0000-0000-000000000003" as const,
-  show_ryan_survive:     "a0000000-0000-0000-0000-000000000004" as const,
+  show_ryan_america:     "a0000000-0000-0000-0000-000000000003" as const,
+  show_ryan_penny:       "a0000000-0000-0000-0000-000000000004" as const,
   show_yes_discomfort:   "a0000000-0000-0000-0000-000000000005" as const,
   show_yes_project:      "a0000000-0000-0000-0000-000000000006" as const,
   show_beast_originals:  "a0000000-0000-0000-0000-000000000007" as const,
@@ -114,32 +121,32 @@ export const SEED_SHOWS: Show[] = [
   },
   // Ryan Trahan
   {
-    id: IDS.show_ryan_penny, creator_id: IDS.creator_ryan,
-    title: "The Penny Series",
-    description: "Starting with a single penny, Ryan trades his way across America in a masterclass of creativity, negotiation, and sheer willpower. Every trade raises the stakes.",
-    banner_url: null, thumbnail_url: null, genre: "Challenge",
+    id: IDS.show_ryan_america, creator_id: IDS.creator_ryan,
+    title: "Top 10 America",
+    description: "Ryan and Haley visit the 10 most iconic places in America — from the Golden Gate Bridge to the Grand Canyon — completing challenges at every stop.",
+    banner_url: null, thumbnail_url: null, genre: "Travel",
     created_at: "2024-06-01T00:00:00Z",
   },
   {
-    id: IDS.show_ryan_survive, creator_id: IDS.creator_ryan,
-    title: "50 Hours",
-    description: "Ryan locks himself into Earth's most hostile environments — deserts, caves, frozen tundra — for 50 hours. No food, no company, no escape. Pure survival.",
-    banner_url: null, thumbnail_url: null, genre: "Survival",
+    id: IDS.show_ryan_penny, creator_id: IDS.creator_ryan,
+    title: "The Penny Series",
+    description: "Starting with a single penny, Ryan trades his way across America in a masterclass of creativity, negotiation, and sheer willpower.",
+    banner_url: null, thumbnail_url: null, genre: "Challenge",
     created_at: "2024-06-01T00:00:00Z",
   },
   // Yes Theory
   {
     id: IDS.show_yes_discomfort, creator_id: IDS.creator_yes,
     title: "Seeking Discomfort",
-    description: "The series that started a movement. Saying yes to strangers, flying to random countries, climbing impossible heights — growth lives outside comfort.",
+    description: "The series that started a movement. Tokyo's illegal drifting underworld, the world's most isolated man, stranded on deserted islands — growth lives at the edge of fear.",
     banner_url: null, thumbnail_url: null, genre: "Adventure",
     created_at: "2024-06-01T00:00:00Z",
   },
   {
     id: IDS.show_yes_project, creator_id: IDS.creator_yes,
     title: "Project Yes",
-    description: "Large-scale community experiments bringing thousands of strangers together — proving that people can change the world when they say yes.",
-    banner_url: null, thumbnail_url: null, genre: "Social Experiment",
+    description: "Strangers, communities, and entire countries saying yes. From Pakistan to abandoned Japanese homes, the team proves human connection transcends every border.",
+    banner_url: null, thumbnail_url: null, genre: "Documentary",
     created_at: "2024-06-01T00:00:00Z",
   },
   // MrBeast
@@ -193,34 +200,40 @@ const kJpn_Eps: Episode[] = [
   E(kJpn_S1.id, YT.kw_surprise_gf,   "Surprising My Girlfriend After 43 Days Apart", 3, 950, "After 43 days on the road, Kelly orchestrates an elaborate surprise reunion — and captures every emotional second."),
 ];
 
-/* ----- Ryan Trahan: The Penny Series (S1) — PLACEHOLDER IDs ----- */
+/* ----- Ryan Trahan: Top 10 America (S1) — REAL IDs ----- */
+const rAmer_S1 = S(IDS.show_ryan_america, 1, "Season 1");
+const rAmer_Eps: Episode[] = [
+  E(rAmer_S1.id, YT.rt_america_01, "I Visited the Top 10 Places in America", 1, 1340, "Ryan and Haley kick off their biggest adventure yet — visiting the 10 most iconic places in America with unique challenges at every stop."),
+  E(rAmer_S1.id, YT.rt_america_02, "Top 10 Places — Washington D.C.", 2, 1180, "The nation's capital. Monuments, museums, and a surprise challenge from a sitting Congressman."),
+  E(rAmer_S1.id, YT.rt_america_03, "Top 10 Places — Niagara Falls", 3, 1020, "One of the natural wonders of the world. Ryan and Haley get closer to the falls than any tourist ever should."),
+  E(rAmer_S1.id, YT.rt_america_04, "Top 10 Places — New York City", 4, 1250, "Times Square, Central Park, and a pizza challenge that nearly breaks them."),
+  E(rAmer_S1.id, YT.rt_america_05, "Top 10 Places — Yellowstone", 5, 1300, "Geysers, bison, and the most surreal landscape in America. The halfway point of their journey."),
+];
+
+/* ----- Ryan Trahan: The Penny Series (S1) — classic series, fill from YouTube Data API ----- */
 const rPen_S1 = S(IDS.show_ryan_penny, 1, "Penny to Fortune");
 const rPen_Eps: Episode[] = [
   E(rPen_S1.id, YT.rt_penny_01, "Trading a Penny for a Car", 1, 891, "The viral challenge begins. Ryan hits the streets with one cent and a dream — by sunset, he's driving away in a used sedan."),
   E(rPen_S1.id, YT.rt_penny_02, "From a Car to a Tiny House", 2, 954, "After a series of improbable trades, Ryan stands in front of a house he acquired from a single penny."),
-  E(rPen_S1.id, YT.rt_penny_03, "The Final Trade: Giving It All Away", 3, 1123, "The emotional finale. After crossing America on a penny, Ryan gives everything to a family who needs it more."),
 ];
 
-/* ----- Ryan Trahan: 50 Hours (S1) — PLACEHOLDER IDs ----- */
-const rSurv_S1 = S(IDS.show_ryan_survive, 1, "Extremes");
-const rSurv_Eps: Episode[] = [
-  E(rSurv_S1.id, YT.rt_survive_01, "I Survived 50 Hours in the Desert", 1, 1043, "110°F heat, no food, 2 liters of water. Ryan is dropped in the Sonoran Desert with nothing but a camera."),
-  E(rSurv_S1.id, YT.rt_survive_02, "I Survived 50 Hours in a Cave", 2, 985, "Complete darkness, disorienting silence, and freezing temperatures. Ryan descends into America's deepest cave system."),
-];
-
-/* ----- Yes Theory: Seeking Discomfort (S1) — PLACEHOLDER IDs ----- */
-const ySeek_S1 = S(IDS.show_yes_discomfort, 1, "Foundations");
+/* ----- Yes Theory: Seeking Discomfort (S1) — REAL IDs ----- */
+const ySeek_S1 = S(IDS.show_yes_discomfort, 1, "Edge of Fear");
 const ySeek_Eps: Episode[] = [
-  E(ySeek_S1.id, YT.yt_seek_01, "Saying Yes to a Stranger for 24 Hours", 1, 723, "The video that started it all. Thomas hands control of his life to a complete stranger. Every request must be answered with 'yes.'"),
-  E(ySeek_S1.id, YT.yt_seek_02, "I Flew to a Random Country with No Plan", 2, 876, "Blindfolded at the airport, the team spins a globe and buys a ticket to wherever their finger lands."),
-  E(ySeek_S1.id, YT.yt_seek_03, "Climbing the Tallest Building in Asia", 3, 654, "No permits, no safety nets. The team attempts to reach the top of Shanghai Tower through sheer determination."),
+  E(ySeek_S1.id, YT.yt_tokyo_drift, "Inside Japan's Illegal Drifting Underworld", 1, 1420, "The team goes deep into Tokyo's underground car culture — high-speed drifting on mountain passes where one mistake means disaster."),
+  E(ySeek_S1.id, YT.yt_isolated_man, "'He's Not Human' — The Most Isolated Man in the World", 2, 1350, "They travel to the ends of the Earth to meet a man who has lived alone for decades. What they discover changes their definition of human connection."),
+  E(ySeek_S1.id, YT.yt_dangerous_island, "50 Hours on Europe's Most Dangerous Island", 3, 1280, "An island so dangerous that visiting is illegal. The team defies the ban and documents what they find."),
+  E(ySeek_S1.id, YT.yt_stranded_42h, "Actually Stranded on a Deserted Island for 42 Hours", 4, 1500, "No crew. No boats. No plan. A real emergency unfolds as the team is stranded with no way to call for help."),
 ];
 
-/* ----- Yes Theory: Project Yes (S1) — PLACEHOLDER IDs ----- */
-const yProj_S1 = S(IDS.show_yes_project, 1, "Strangers United");
+/* ----- Yes Theory: Project Yes (S1) — REAL IDs ----- */
+const yProj_S1 = S(IDS.show_yes_project, 1, "Strangers Become Family");
 const yProj_Eps: Episode[] = [
-  E(yProj_S1.id, YT.yt_project_01, "1000 Strangers, 1 Massive Surprise", 1, 1345, "The team invites 1000 strangers to a warehouse. What happens next defies all expectations."),
-  E(yProj_S1.id, YT.yt_project_02, "We Built a School in 7 Days", 2, 1423, "Arriving with nothing but a plan, the team leads 200 volunteers to construct a fully functional school in one week."),
+  E(yProj_S1.id, YT.yt_pakistan, "Inside Pakistan's Most Dangerous City", 1, 1380, "The team arrives in a city the media calls 'the most dangerous on Earth' — and finds something no one expected."),
+  E(yProj_S1.id, YT.yt_abandoned_jp, "Why Does Japan Have 9,000,000 Abandoned Homes?", 2, 1250, "A journey into Japan's ghost towns. Millions of empty houses, entire villages going silent. The team investigates why."),
+  E(yProj_S1.id, YT.yt_2countries, "24 Hours in 2 Countries that Hate Each Other", 3, 1100, "The team crosses a hostile border twice in 24 hours, spending a day on each side to find out if ordinary people are really that different."),
+  E(yProj_S1.id, YT.yt_delivery_vacation, "We Took Our Food Delivery Man on His First Vacation", 4, 1020, "They find a man who's never taken a day off in his life and give him the trip of a lifetime."),
+  E(yProj_S1.id, YT.yt_scotland, "Exploring Scotland's Forgotten Castles with Giants", 5, 1150, "A quest to find Scotland's most remote castle — with two larger-than-life locals as guides."),
 ];
 
 /* ----- MrBeast: Beast Originals (S1) — REAL IDs ----- */
@@ -244,12 +257,12 @@ const bContest_Eps: Episode[] = [
    AGGREGATED EXPORTS
    ================================================================== */
 export const SEED_SEASONS: Season[] = [
-  kExp_S1, kJpn_S1, rPen_S1, rSurv_S1,
+  kExp_S1, kJpn_S1, rAmer_S1, rPen_S1,
   ySeek_S1, yProj_S1, bOrig_S1, bContest_S1,
 ];
 
 export const SEED_EPISODES: Episode[] = [
-  ...kExp_Eps, ...kJpn_Eps, ...rPen_Eps, ...rSurv_Eps,
+  ...kExp_Eps, ...kJpn_Eps, ...rAmer_Eps, ...rPen_Eps,
   ...ySeek_Eps, ...yProj_Eps, ...bOrig_Eps, ...bContest_Eps,
 ];
 

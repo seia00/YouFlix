@@ -8,6 +8,9 @@
 import {
   staticSeedVendor,
   HERO_FALLBACK_YT_ID,
+  SEED_SHOWS,
+  SEED_SEASONS,
+  SEED_EPISODES,
 } from "@/lib/seed-data";
 import type {
   HeroContent,
@@ -57,6 +60,28 @@ function resolveYoutubeId(raw: string): string {
 /** Picks a random element from an array. */
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/**
+ * Builds a map of showId → YouTube thumbnail URL by finding each
+ * show's first episode and using its video ID to generate a thumbnail.
+ */
+function buildShowThumbnailMap(): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const show of SEED_SHOWS) {
+    const firstSeason = SEED_SEASONS.find((s) => s.show_id === show.id);
+    const firstEp = firstSeason
+      ? SEED_EPISODES.find((e) => e.season_id === firstSeason.id)
+      : null;
+    // Only generate thumbnails for shows with real (non-placeholder) video IDs
+    if (firstEp && !firstEp.youtube_id.startsWith("REPLACE_ME_")) {
+      map.set(
+        show.id,
+        `https://i.ytimg.com/vi/${firstEp.youtube_id}/hqdefault.jpg`,
+      );
+    }
+  }
+  return map;
 }
 
 /* ==================================================================
@@ -173,10 +198,12 @@ export async function getContentRows(): Promise<ContentRow[]> {
     allShows = shows;
   }
 
+  const thumbnailMap = buildShowThumbnailMap();
+
   const mapToCard = (s: Show): ShowCard => ({
     id: s.id,
     title: s.title,
-    thumbnail_url: s.thumbnail_url,
+    thumbnail_url: s.thumbnail_url ?? thumbnailMap.get(s.id) ?? null,
     genre: s.genre,
     creator_name: allCreators.find((c) => c.id === s.creator_id)?.name ?? "Unknown",
   });
@@ -254,7 +281,19 @@ export async function getShowWithDetails(showId: string): Promise<ShowWithDetail
         .sort((a, b) => a.episode_number - b.episode_number),
     }));
 
-  return { ...show, creator, seasons: showSeasons };
+  // Derive banner/thumbnail from first episode if not explicitly set
+  const firstEpisodeYtId = showSeasons[0]?.episodes[0]?.youtube_id;
+  const derivedBanner = firstEpisodeYtId
+    ? `https://i.ytimg.com/vi/${firstEpisodeYtId}/maxresdefault.jpg`
+    : null;
+
+  return {
+    ...show,
+    thumbnail_url: show.thumbnail_url ?? derivedBanner,
+    banner_url: show.banner_url ?? derivedBanner,
+    creator,
+    seasons: showSeasons,
+  };
 }
 
 /* ==================================================================

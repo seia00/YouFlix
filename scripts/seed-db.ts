@@ -31,6 +31,15 @@ async function main() {
   const supabase = createClient(url, key);
   console.log("Connected to Supabase — seeding database...\n");
 
+  /* Clear existing data (reverse dependency order) */
+  console.log("  Clearing existing data...");
+  await supabase.from("watch_history").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("episodes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("seasons").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("shows").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabase.from("creators").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  console.log("  ✓ Cleared\n");
+
   /* ---------- Creators ---------- */
   const { error: creatorError } = await supabase
     .from("creators")
