@@ -54,8 +54,13 @@ function resolveYoutubeId(raw: string): string {
   return raw.startsWith("REPLACE_ME_") ? HERO_FALLBACK_YT_ID : raw;
 }
 
+/** Picks a random element from an array. */
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 /* ==================================================================
-   Homepage — Hero Banner
+   Homepage — Hero Banner (randomized per request)
    ================================================================== */
 export async function getHeroContent(): Promise<HeroContent> {
   const sb = await getSupabaseServerClient();
@@ -64,11 +69,10 @@ export async function getHeroContent(): Promise<HeroContent> {
     const { data: shows } = await sb
       .from("shows")
       .select("*, creator:creators(*)")
-      .order("created_at", { ascending: false })
-      .limit(1);
+      .order("created_at", { ascending: false });
 
     if (shows && shows.length > 0) {
-      const show = shows[0];
+      const show = pickRandom(shows);
       const creator = show.creator as unknown as Creator;
 
       const { data: seasons } = await sb
@@ -101,7 +105,7 @@ export async function getHeroContent(): Promise<HeroContent> {
     }
   }
 
-  // Fallback: static seed data
+  // Fallback: static seed data — pick a random show each page load
   const [creators, shows, seasons, episodes] = await Promise.all([
     staticSeedVendor.fetchCreators(),
     staticSeedVendor.fetchShows(),
@@ -109,13 +113,34 @@ export async function getHeroContent(): Promise<HeroContent> {
     staticSeedVendor.fetchEpisodes(),
   ]);
 
-  const show = shows[0];
+  const show = pickRandom(shows);
   const creator = creators.find((c) => c.id === show.creator_id)!;
   const firstSeasonId = seasons.filter((s) => s.show_id === show.id)[0]?.id;
   const firstEpId = episodes.filter((e) => e.season_id === firstSeasonId)[0]?.youtube_id;
   const trailer_youtube_id = resolveYoutubeId(firstEpId ?? HERO_FALLBACK_YT_ID);
 
   return { show, creator, trailer_youtube_id };
+}
+
+/**
+ * Returns ALL shows formatted for a rotating hero carousel.
+ * The client component cycles through these with fade transitions.
+ */
+export async function getAllHeroSlides(): Promise<HeroContent[]> {
+  const [creators, shows, seasons, episodes] = await Promise.all([
+    staticSeedVendor.fetchCreators(),
+    staticSeedVendor.fetchShows(),
+    staticSeedVendor.fetchSeasons(),
+    staticSeedVendor.fetchEpisodes(),
+  ]);
+
+  return shows.map((show) => {
+    const creator = creators.find((c) => c.id === show.creator_id)!;
+    const firstSeasonId = seasons.filter((s) => s.show_id === show.id)[0]?.id;
+    const firstEpId = episodes.filter((e) => e.season_id === firstSeasonId)[0]?.youtube_id;
+    const trailer_youtube_id = resolveYoutubeId(firstEpId ?? HERO_FALLBACK_YT_ID);
+    return { show, creator, trailer_youtube_id };
+  });
 }
 
 /* ==================================================================

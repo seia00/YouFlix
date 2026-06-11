@@ -1,29 +1,25 @@
 /* ==========================================================================
    Youflix — Home Page (Server Component)
    Fetches hero content and content rows, then renders the cinematic
-   homepage layout with HeroBanner + HorizontalRows.
+   homepage layout with HeroCarousel + HorizontalRows.
    ========================================================================== */
 
 import { Suspense } from "react";
-import HeroBanner from "@/components/HeroBanner";
+import HeroSection from "@/components/HeroSection";
 import HorizontalRow from "@/components/HorizontalRow";
 import { HeroBannerSkeleton, RowSkeleton } from "@/components/Skeleton";
 import { getContentRows } from "@/lib/data";
 
-/**
- * Home page is a Server Component that fetches all row data
- * and delegates rendering to client components for interactivity.
- */
 export default async function HomePage() {
   const rows = await getContentRows();
 
   return (
     <div className="min-h-screen bg-bg">
       {/* ------------------------------------------------------------------
-          Hero Banner — wrapped in Suspense for streaming
+          Hero Carousel — all 8 shows rotate on a timer
           ------------------------------------------------------------------ */}
       <Suspense fallback={<HeroBannerSkeleton />}>
-        <HeroBanner />
+        <HeroSection />
       </Suspense>
 
       {/* ------------------------------------------------------------------
